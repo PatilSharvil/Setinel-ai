@@ -32,7 +32,7 @@ def _inside(p: Path) -> bool:
 @tool
 def list_files(path: str = ".") -> str:
     """List relevant source files and directories in the project."""
-    print("  [tool] Discovering project files...")
+    print("  ⏺ Discover project files")
     base = (root() / path).resolve()
     if not _inside(base) and base != root():
         return "Error: path outside project."
@@ -61,7 +61,7 @@ def list_files(path: str = ".") -> str:
 @tool
 def read_file(path: str, start_line: int = 1, end_line: int = 200) -> str:
     """Read a file within the project, with optional line range."""
-    print(f"  [tool] Reading {path}...")
+    print(f"  ⏺ Read {path}")
     target = (root() / path).resolve()
     if not _inside(target):
         return "Error: path outside project or invalid."
@@ -86,7 +86,7 @@ def read_file(path: str, start_line: int = 1, end_line: int = 200) -> str:
 @tool
 def search_code(query: str, path: str = ".") -> str:
     """Search project code using ripgrep. Returns paths and line numbers."""
-    print(f"  [tool] Searching code for: {query}...")
+    print(f"  ⏺ Search: {query}")
     if not RG:
         return "ripgrep (rg) not installed."
     base = (root() / path).resolve()
@@ -117,28 +117,28 @@ def search_code(query: str, path: str = ".") -> str:
 @tool
 def scan_secrets() -> str:
     """Run Gitleaks secret scan on the project."""
-    print("  [tool] Running Gitleaks...")
+    print("  ⏺ Run Gitleaks (secret scan)")
     msg = run_gitleaks(root(), store())
     return msg
 
 @tool
 def scan_vulnerabilities() -> str:
     """Run Semgrep vulnerability scan on the project."""
-    print("  [tool] Running Semgrep...")
+    print("  ⏺ Run Semgrep (vulnerability scan)")
     msg = run_semgrep(root(), store())
     return msg
 
 @tool
 def search_security_patterns() -> str:
     """Search for common security anti-patterns using ripgrep."""
-    print("  [tool] Searching suspicious code patterns...")
+    print("  ⏺ Search security patterns")
     msg = run_security_patterns(root(), store())
     return msg
 
 @tool
 def get_findings(severity: str = "", category: str = "", source: str = "", finding_id: str = "") -> str:
     """Retrieve stored findings with optional filters."""
-    print("  [tool] Retrieving findings...")
+    print("  ⏺ Read findings")
     res = store().get(
         fid=finding_id or None,
         severity=severity or None,

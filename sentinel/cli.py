@@ -82,7 +82,7 @@ def main():
         except Exception as e:
             answer = f"Error: {e}"
         safe_answer = answer.encode("cp1252", "replace").decode("cp1252")
-        console.print(f"\n[bold blue]AST ›[/bold blue]")
+        console.print(f"\n[bold blue]⏺[/bold blue]")
         console.print(Markdown(safe_answer))
 
 if __name__ == "__main__":
