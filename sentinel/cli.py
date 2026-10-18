@@ -1,4 +1,4 @@
-import os, warnings, logging
+import os, sys, warnings, logging
 from pathlib import Path
 warnings.filterwarnings("ignore")
 logging.disable(logging.WARNING)
@@ -14,29 +14,48 @@ with contextlib.redirect_stderr(io.StringIO()):
     from .agent import Session
 
 app = typer.Typer(add_completion=False)
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 console = Console()
 
-BANNER = """[bold cyan]AST[/bold cyan] [dim]— AI Security & Code Assistant[/dim]
-[dim]ReAct Agent | Project-aware Chat[/dim]"""
+WELCOME = """[orange]✳[/orange]  Welcome to [bold]AST[/bold]!
+
+[dim]while(curious) {[/dim]
+    [cyan]scan_project[/cyan]();
+    [cyan]dig_deeper[/cyan]();
+    [cyan]explain_findings[/cyan]();
+
+    [dim]if (stuck) {[/dim]
+        [magenta]keep_thinking[/magenta]();
+    [dim]}[/dim]
+[dim]}[/dim]"""
 
 def main():
     root = project_root()
     settings = Settings()
     init_state(root, FindingsStore())
     session = Session(settings)
-    console.print(BANNER)
     console.print()
-    console.print(f"Project: {root}")
-    console.print(f"Provider: {settings.provider}")
-    console.print("Type /help for commands. Natural language is primary.\n")
+    console.print(WELCOME)
+    console.print()
+    console.print(f"[dim]project  {root}[/dim]")
+    console.print(f"[dim]provider {settings.provider}[/dim]")
+    console.print("[dim]/help for commands · natural language is primary[/dim]\n")
     try:
         session.configure()
     except Exception as e:
         console.print(f"[yellow]Provider not configured: {e}. Use /provider to set.[/yellow]")
     while True:
+        width = min(console.width, 80)
+        console.print("┌" + "─" * (width - 2) + "┐")
         try:
-            user = console.input("[bold green]You ›[/bold green] ")
+            user = console.input("│ [bold cyan]›[/bold cyan] ")
+            console.print("└" + "─" * (width - 2) + "┘")
         except (EOFError, KeyboardInterrupt):
+            console.print("└" + "─" * (width - 2) + "┘")
             console.print("\nBye.")
             break
         user = user.strip()
@@ -77,12 +96,12 @@ def main():
                 console.print("Unknown command.")
                 continue
         try:
-            with console.status("[bold blue]AST ›[/bold blue] Thinking...", spinner="dots"):
+            with console.status("[orange]✳[/orange] Simmering...", spinner="dots"):
                 answer = session.ask(user)
         except Exception as e:
             answer = f"Error: {e}"
         safe_answer = answer.encode("cp1252", "replace").decode("cp1252")
-        console.print(f"\n[bold blue]⏺[/bold blue]")
+        console.print(f"\n[orange]✳[/orange]")
         console.print(Markdown(safe_answer))
 
 if __name__ == "__main__":
