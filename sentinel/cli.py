@@ -27,11 +27,11 @@ def _run_with_thinking(console, fn):
             box["error"] = e
     t = threading.Thread(target=runner, daemon=True)
     frames = ["", ".", "..", "..."]
-    with Live(Text("✳ Thinking", style="orange"), console=console, refresh_per_second=12, transient=True) as live:
+    with Live(Text("Thinking", style="#ff8800"), console=console, refresh_per_second=12, transient=True) as live:
         t.start()
         i = 0
         while t.is_alive():
-            live.update(Text(f"✳ Thinking{frames[i % 4]}", style="orange"))
+            live.update(Text(f"Thinking{frames[i % 4]}", style="#ff8800"))
             time.sleep(0.12)
             i += 1
         t.join()
@@ -48,7 +48,7 @@ except Exception:
     pass
 console = Console()
 
-WELCOME = """[orange]✳[/orange]  Welcome to [bold]AST[/bold]!
+WELCOME = """[bold #ff8800]AST[/bold #ff8800]  Welcome!
 
 [dim]while(curious) {[/dim]
     [cyan]scan_project[/cyan]();
@@ -123,7 +123,7 @@ def main():
         except Exception as e:
             answer = f"Error: {e}"
         safe_answer = answer.encode("cp1252", "replace").decode("cp1252")
-        console.print("\n[bold orange]Agent >[/bold orange]")
+        console.print("\n[bold #ff8800]Agent >[/bold #ff8800]")
         console.print(Markdown(safe_answer))
 
 if __name__ == "__main__":
