@@ -48,6 +48,13 @@ except Exception:
     pass
 console = Console()
 
+def _banner():
+    try:
+        import pyfiglet
+        return pyfiglet.figlet_format("Sentinel-AI", font="ansi_shadow", width=max(60, console.width))
+    except Exception:
+        return "[bold #ff8800]Sentinel-AI[/bold #ff8800]"
+
 WELCOME = """[bold #ff8800]AST[/bold #ff8800]  Welcome!
 
 [dim]while(curious) {[/dim]
@@ -65,9 +72,13 @@ def main():
     settings = Settings()
     init_state(root, FindingsStore())
     session = Session(settings)
-    console.print()
-    console.print(WELCOME)
-    console.print()
+    def show_banner():
+        console.print()
+        console.print(_banner(), style="#ff8800", markup=False, highlight=False)
+        console.print(WELCOME)
+        console.print()
+    show_banner()
+    last_size = os.get_terminal_size().columns
     console.print(f"[dim]project  {root}[/dim]")
     console.print(f"[dim]provider {settings.provider}[/dim]")
     console.print("[dim]/help for commands · natural language is primary[/dim]\n")
@@ -76,6 +87,13 @@ def main():
     except Exception as e:
         console.print(f"[yellow]Provider not configured: {e}. Use /provider to set.[/yellow]")
     while True:
+        try:
+            size = os.get_terminal_size().columns
+        except OSError:
+            size = console.width
+        if size != last_size:
+            last_size = size
+            show_banner()
         try:
             user = console.input("[bold cyan]You >[/bold cyan] ")
         except (EOFError, KeyboardInterrupt):
