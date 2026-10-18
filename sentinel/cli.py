@@ -123,7 +123,7 @@ def main():
         except Exception as e:
             answer = f"Error: {e}"
         safe_answer = answer.encode("cp1252", "replace").decode("cp1252")
-        console.print(f"\n[orange]✳[/orange]")
+        console.print("\n[bold orange]Agent >[/bold orange]")
         console.print(Markdown(safe_answer))
 
 if __name__ == "__main__":
