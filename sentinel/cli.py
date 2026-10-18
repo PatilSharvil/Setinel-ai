@@ -13,6 +13,33 @@ import contextlib, io
 with contextlib.redirect_stderr(io.StringIO()):
     from .agent import Session
 
+import threading, time
+from rich.live import Live
+from rich.text import Text
+
+
+def _run_with_thinking(console, fn):
+    box = {}
+    def runner():
+        try:
+            box["value"] = fn()
+        except Exception as e:
+            box["error"] = e
+    t = threading.Thread(target=runner, daemon=True)
+    frames = ["", ".", "..", "..."]
+    with Live(Text("✳ Thinking", style="orange"), console=console, refresh_per_second=12, transient=True) as live:
+        t.start()
+        i = 0
+        while t.is_alive():
+            live.update(Text(f"✳ Thinking{frames[i % 4]}", style="orange"))
+            time.sleep(0.12)
+            i += 1
+        t.join()
+    if "error" in box:
+        raise box["error"]
+    return box.get("value", "")
+
+
 app = typer.Typer(add_completion=False)
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -92,8 +119,7 @@ def main():
                 console.print("Unknown command.")
                 continue
         try:
-            with console.status("[orange]✳[/orange] Simmering...", spinner="dots"):
-                answer = session.ask(user)
+            answer = _run_with_thinking(console, lambda: session.ask(user))
         except Exception as e:
             answer = f"Error: {e}"
         safe_answer = answer.encode("cp1252", "replace").decode("cp1252")
