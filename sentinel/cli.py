@@ -16,17 +16,16 @@ with contextlib.redirect_stderr(io.StringIO()):
 app = typer.Typer(add_completion=False)
 console = Console()
 
-BANNER = """+--------------------------------------------------+
-|       AST - AI Security & Code Assistant         |
-|       ReAct Agent | Project-aware Chat           |
-+--------------------------------------------------+"""
+BANNER = """[bold cyan]AST[/bold cyan] [dim]— AI Security & Code Assistant[/dim]
+[dim]ReAct Agent | Project-aware Chat[/dim]"""
 
 def main():
     root = project_root()
     settings = Settings()
     init_state(root, FindingsStore())
     session = Session(settings)
-    console.print(Panel(BANNER, style="cyan"))
+    console.print(BANNER)
+    console.print()
     console.print(f"Project: {root}")
     console.print(f"Provider: {settings.provider}")
     console.print("Type /help for commands. Natural language is primary.\n")
@@ -36,7 +35,7 @@ def main():
         console.print(f"[yellow]Provider not configured: {e}. Use /provider to set.[/yellow]")
     while True:
         try:
-            user = console.input("[bold green]You >[/bold green] ")
+            user = console.input("[bold green]You ›[/bold green] ")
         except (EOFError, KeyboardInterrupt):
             console.print("\nBye.")
             break
@@ -78,12 +77,12 @@ def main():
                 console.print("Unknown command.")
                 continue
         try:
-            with console.status("[bold blue]AST >[/bold blue] Thinking...", spinner="dots"):
+            with console.status("[bold blue]AST ›[/bold blue] Thinking...", spinner="dots"):
                 answer = session.ask(user)
         except Exception as e:
             answer = f"Error: {e}"
         safe_answer = answer.encode("cp1252", "replace").decode("cp1252")
-        console.print(f"\n[bold blue]AST >[/bold blue]")
+        console.print(f"\n[bold blue]AST ›[/bold blue]")
         console.print(Markdown(safe_answer))
 
 if __name__ == "__main__":
