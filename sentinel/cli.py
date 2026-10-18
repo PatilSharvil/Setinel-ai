@@ -49,13 +49,14 @@ def main():
     except Exception as e:
         console.print(f"[yellow]Provider not configured: {e}. Use /provider to set.[/yellow]")
     while True:
-        width = min(console.width, 80)
-        console.print("┌" + "─" * (width - 2) + "┐")
+        width = max(20, console.width - 1)
+        bar = "─" * (width - 2)
+        console.print("┌" + bar + "┐")
         try:
             user = console.input("│ [bold cyan]›[/bold cyan] ")
-            console.print("└" + "─" * (width - 2) + "┘")
+            console.print("└" + bar + "┘")
         except (EOFError, KeyboardInterrupt):
-            console.print("└" + "─" * (width - 2) + "┘")
+            console.print("└" + bar + "┘")
             console.print("\nBye.")
             break
         user = user.strip()
