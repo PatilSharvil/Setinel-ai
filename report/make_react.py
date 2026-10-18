@@ -1,0 +1,28 @@
+dot = r"""digraph ReAct {
+  rankdir=TB;
+  bgcolor="white";
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fillcolor="#E8F0FE", color="#1A73E8"];
+  edge [color="#5F6368"];
+  Start [label="START", shape=oval, fillcolor="#E6F4EA", color="#1E8E3E"];
+  Agent [label="Agent / LLM", fillcolor="#FEF7E0", color="#F9AB00"];
+  Decision [label="Tool call requested?", shape=diamond, fillcolor="#FCE8E6", color="#D93025"];
+  Validate [label="Validate tools"];
+  Execute [label="Execute tools"];
+  Obs [label="Capture observation"];
+  Final [label="Final response", fillcolor="#E6F4EA", color="#1E8E3E"];
+  End [label="END", shape=oval, fillcolor="#E6F4EA", color="#1E8E3E"];
+  Start -> Agent;
+  Agent -> Decision;
+  Decision -> Validate [label="Yes", color="#1E8E3E"];
+  Decision -> Final [label="No", color="#D93025"];
+  Validate -> Execute;
+  Execute -> Obs;
+  Obs -> Agent;
+  Final -> End;
+}
+"""
+open(r"C:/Users/patil/OneDrive/Desktop/Projects/appsentinel v2/report/fig/react.dot","w",encoding="utf-8").write(dot)
+import subprocess, os
+os.environ["PATH"] = r"C:/Program Files/Graphviz/bin;" + os.environ["PATH"]
+subprocess.run(["dot","-Tpng","-Gdpi=200", r"C:/Users/patil/OneDrive/Desktop/Projects/appsentinel v2/report/fig/react.dot", "-o", r"C:/Users/patil/OneDrive/Desktop/Projects/appsentinel v2/report/fig/react.png"], check=True)
+print("rendered")

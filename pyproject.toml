@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sentinel-ai"
+version = "0.1.0"
+description = "AST - AI Security & Code Assistant (ReAct)"
+requires-python = ">=3.11"
+dependencies = [
+  "langgraph>=1.0.0",
+  "langchain>=1.0.0",
+  "langchain-core>=1.0.0",
+  "langchain-groq>=1.0.0",
+  "langchain-openai>=1.0.0",
+  "pydantic>=2.0.0",
+  "rich>=13.0.0",
+  "typer>=0.12.0",
+  "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+ast = "sentinel.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sentinel*"]
